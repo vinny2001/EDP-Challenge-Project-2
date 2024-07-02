@@ -110,7 +110,20 @@ app.get('/api/films/:id/characters', async (req, res) => {
         res.status(500).send("Execute order 66 ☹");
     }
 });
- 
+
+app.get('/api/characters/:id/films', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const films_chars_collection = db.collection(filmsCharactersCollection);
+        const characters_films = await films_chars_collection.find({character_id: parseInt(id)}).toArray();
+        res.json(characters_films);
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).send("Execute order 66 ☹");
+    }
+});
 
 app.get('/api/films/:id/planets', async (req, res) => {
     try {
@@ -123,6 +136,40 @@ app.get('/api/films/:id/planets', async (req, res) => {
 
         res.json(filmsPlanets);
         console.log(filmsPlanets);
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).send("Execute Order 66 ☹");
+    }
+});
+
+app.get('/api/planets/:id/films', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+
+        const films_planets_collection = db.collection(filmsPlanetsCollection);
+        const planetsFilms = await films_planets_collection.find({planet_id: parseInt(id)}).toArray();
+
+        res.json(planetsFilms);
+        
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).send("Execute Order 66 ☹");
+    }
+});
+
+app.get('/api/planets/:id/characters', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+
+        const characters_collection = db.collection(charactersCollection);
+        const characters = await characters_collection.find({homeworld: parseInt(id)}).toArray();
+
+        res.json(characters);
+        
     } catch (err) {
         console.error("Error:", err);
         res.status(500).send("Execute Order 66 ☹");
