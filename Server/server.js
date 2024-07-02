@@ -1,12 +1,14 @@
 import express from 'express';
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 //Initialize Express server on Port 3000
 const app = express();
 const PORT = 3000;
 app.use(express.json());
+app.use(cors()); // Enable CORS for all routes
 
 const url = process.env.MONGO_DB_URL;
 const dbName = process.env.MONGO_DB;
