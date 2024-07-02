@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 //Initialize Express server on Port 3000
 const app = express();
+app.use(express.json());
 const PORT = 3000;
 
 const url = process.env.MONGO_DB_URL;
@@ -12,6 +13,7 @@ const dbName = process.env.MONGO_DB;
 const charactersCollection = process.env.CHARACTERS_COLLECTION;
 const filmsCollection = process.env.FILMS_COLLECTION;
 const planetsCollection = process.env.PLANETS_COLLECTION;
+const filmsCharactersCollection = process.env.FILMS_CHARACTERS_COLLECTION;
 
 app.get('/api/characters', async (req, res) => {
     try {
@@ -46,6 +48,62 @@ app.get('/api/planets', async (req, res) => {
         const planets_collection = db.collection(planetsCollection);
         const planets = await planets_collection.find({}).toArray();
         res.json(planets);
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).send("Execute order 66 ☹");
+    }
+});
+
+app.get('/api/characters/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const characters_collection = db.collection(charactersCollection);
+        const character = await characters_collection.find({id: parseInt(id)}).toArray();
+        res.json(character);
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).send("Execute order 66 ☹");
+    }
+});
+
+app.get('/api/films/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const films_collection = db.collection(filmsCollection);
+        const film = await films_collection.find({id: parseInt(id)}).toArray();
+        res.json(film);
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).send("Execute order 66 ☹");
+    }
+});
+
+app.get('/api/planets/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const planets_collection = db.collection(planetsCollection);
+        const planet = await planets_collection.find({id: parseInt(id)}).toArray();
+        res.json(planet);
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).send("Execute order 66 ☹");
+    }
+});
+
+app.get('/api/films/:id/characters', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const client = await MongoClient.connect(url);
+        const db = client.db(dbName);
+        const films_chars_collection = db.collection(filmsCharactersCollection);
+        const films_characters = await films_chars_collection.find({film_id: parseInt(id)}).toArray();
+        res.json(films_characters);
     } catch (err) {
         console.error("Error:", err);
         res.status(500).send("Execute order 66 ☹");
